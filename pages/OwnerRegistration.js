@@ -8,161 +8,111 @@ import {
   ScrollView,
   TextInput,
   Button,
+  Alert,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 var RNFS = require('react-native-fs');
-let getdata;
+
+let configurations = {
+  owner: {
+    owner_name: '', //give owner_name // ownername //propname/street/replace place- area/state/country/replace aptno- door no
+    owner_password: '',
+    MailId: '',
+    PhoneNumber: '',
+    Property_name: '',
+    Area: '',
+    State: '',
+    country: '',
+    Street: '',
+    Door_Number: '',
+  },
+  location: [],
+  appliance: [],
+  Binding: [],
+};
+//owner_id= " owner.name+owner_address(aptno state... etc)"- club - what string we get is an ownerid
+Binding = []; //It will be like - owneraddress_secondfloorbedroom2_light3
+
 const OwnerRegistration = ({navigation}) => {
   const [OwnerName, setOwnerName] = useState('');
-  const [PhoneNumber, setPhoneNumber] = useState('');
+  const [password, setpassword] = useState('');
   const [MailId, setMailId] = useState('');
-  const [Address, setAddress] = useState('');
+  const [PhoneNumber, setPhoneNumber] = useState('');
+  const [Property_name, setProperty_name] = useState('');
   const [Street, setStreet] = useState('');
-  const [place, setPlace] = useState('');
+  const [Area, setArea] = useState('');
   const [State, setState] = useState('');
   const [country, setcountry] = useState('');
-  const [Apartmentno, setApartmentno] = useState('');
+  const [Door_Number, setDoor_Number] = useState('');
   // const [getdata, setgetdata] = useState('');
 
   const handleSubmitPress = () => {
-    if (!OwnerName) {
-      alert('Please fill OwnerName');
-      return;
-    }
-    if (!PhoneNumber) {
-      alert('Please fill PhoneNumber');
-      return;
-    }
-    if (!Address) {
-      alert('Please fill Address');
-      return;
-    }
-    if (!MailId) {
-      alert('Please fill MailId');
-      return;
-    }
-    if (!Street) {
-      alert('Please fill Street');
-      return;
-    }
-    if (!place) {
-      alert('Please fill place');
-      return;
-    }
-    if (!State) {
-      alert('Please fill State');
-      return;
-    }
-    if (!Apartmentno) {
-      alert('Please fill Apartmentno');
-      return;
-    }
-    if (!country) {
-      alert('Please fill country');
+    if (
+      !OwnerName ||
+      !password ||
+      !MailId ||
+      !PhoneNumber ||
+      !Property_name ||
+      !Area ||
+      !State ||
+      !country ||
+      !Street ||
+      !Door_Number
+    ) {
+      alert('Please fill all the fields');
       return;
     }
 
-    const store = async val => {
+    configurations.owner.owner_name = OwnerName;
+    configurations.owner.owner_password = password;
+    configurations.owner.MailId = MailId;
+    configurations.owner.PhoneNumber = PhoneNumber;
+    configurations.owner.Property_name = Property_name;
+    configurations.owner.Area = Area;
+    configurations.owner.State = State;
+    configurations.owner.country = country;
+    configurations.owner.Street = Street;
+    configurations.owner.Door_Number = Door_Number;
+
+    const store = async configurations => {
       console.log('-----------------------------');
-      const read = await AsyncStorage.getItem('owner');
+      const async_data_owner = await AsyncStorage.getItem('user_config');
+      let read = JSON.parse(async_data_owner);
       console.log(' before reading data inside async storage ', read);
       if (read == null) {
-       // console.log(' for first data ');
-        let valx = '[' + val + ']';
-        await AsyncStorage.setItem('owner', valx);
+        await AsyncStorage.setItem('user_config', configurations);
+        Alert.alert('Data is updated');
         getData();
       } else {
-        //console.log(' for multiple data ');
-        // let val2 =  JSON.parse(read);
-        // let val3 =  JSON.parse(val);
-        let replace_brackets = read.replace('[', '').replace(']', '');
-        let append = '[' + val + ',' + replace_brackets + ']';
-        //console.log('append ', append);
-        await AsyncStorage.setItem('owner', append);
+        //console.log(read.owner);
+        console.log(password, '< >', read.owner.owner_password);
+        if (password == read.owner.owner_password) {
+          await AsyncStorage.setItem('user_config', configurations);
+          Alert.alert('Data is updated');
+        } else {
+          Alert.alert(
+            'Invalid password, Enter correct password to alter owner data.',
+          );
+        }
         getData();
       }
     };
+
     const getData = async () => {
-      const value = await AsyncStorage.getItem('owner');
+      const value = await AsyncStorage.getItem('user_config');
       if (value != null) {
         console.log(' after storing new data inside async storage ', value);
       }
     };
 
-    let data = {
-      OwnerName: OwnerName,
-      PhoneNumber: PhoneNumber,
-      Address: Address,
-      MailId: MailId,
-      Street: Street,
-      place: place,
-      State: State,
-      Apartmentno: Apartmentno,
-      country: country,
-    };
-
-   // console.log('data to be stored into file', data);
-    let data2 = JSON.stringify(data);
+    let data2 = JSON.stringify(configurations);
     if (data2 != null) {
       store(data2);
     }
-
-    //     var filePath = RNFS.ExternalDirectoryPath + '/Ownerdetails.json';
-
-    //     return RNFS.readFile(filePath)
-    //       .then(file => {
-    //         console.log('FILE DATA', file);
-    //         something(file);
-    //       })
-    //       .catch(err => {
-    //         console.log(err.message);
-    //       });
-
-    //     function something(getdata) {
-    //       if (getdata != null) {
-    //         console.log('entered multiple data');
-    //         let demo =  '['+ getdata + data2+']';
-    // //[ ]
-    //         RNFS.writeFile(filePath, demo, 'utf8')
-    //           .then(success => {
-    //             console.log('SUCCESS');
-    //           })
-    //           .catch(err => {
-    //             console.log(err.message);
-    //           });
-
-    //         return RNFS.readFile(filePath)
-    //           .then(file => {
-    //             console.log('FILE DATA', file);
-    //           })
-    //           .catch(err => {
-    //             console.log(err.message);
-    //           });
-    //       } else {
-    //         console.log('entered single data');
-    //         RNFS.writeFile(filePath, data2, 'utf8')
-    //           .then(success => {
-    //             console.log('SUCCESS');
-    //           })
-    //           .catch(err => {
-    //             console.log(err.message);
-    //           });
-
-    //         return RNFS.readFile(filePath)
-    //           .then(file => {
-    //             console.log('FILE DATA', file);
-    //           })
-    //           .catch(err => {
-    //             console.log(err.message);
-    //           });
-    //       }
-    //     }
   };
-  
+
   return (
-
-
     <ScrollView>
       <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20}}>
         Owner registration Screen
@@ -184,23 +134,22 @@ const OwnerRegistration = ({navigation}) => {
           onChangeText={OwnerName => setOwnerName(OwnerName)}
         />
       </View>
-
       <View
         style={{
           flex: 1,
           height: 40,
           marginTop: 20,
           marginLeft: 35,
-
           marginRight: 35,
           margin: 10,
         }}>
         <TextInput
           style={{
             borderWidth: 2,
+            padding: 10,
           }}
-          placeholder="Phone Number"
-          onChangeText={PhoneNumber => setPhoneNumber(PhoneNumber)}
+          placeholder="owner password"
+          onChangeText={password => setpassword(password)}
         />
       </View>
       <View
@@ -220,24 +169,26 @@ const OwnerRegistration = ({navigation}) => {
           onChangeText={MailId => setMailId(MailId)}
         />
       </View>
+
       <View
         style={{
           flex: 1,
           height: 40,
           marginTop: 20,
           marginLeft: 35,
+
           marginRight: 35,
           margin: 10,
         }}>
         <TextInput
           style={{
             borderWidth: 2,
-            padding: 10,
           }}
-          placeholder="Address"
-          onChangeText={Address => setAddress(Address)}
+          placeholder="Phone Number"
+          onChangeText={PhoneNumber => setPhoneNumber(PhoneNumber)}
         />
       </View>
+
       <View
         style={{
           flex: 1,
@@ -252,8 +203,8 @@ const OwnerRegistration = ({navigation}) => {
             borderWidth: 2,
             padding: 10,
           }}
-          placeholder="Street"
-          onChangeText={Street => setStreet(Street)}
+          placeholder="Property_name"
+          onChangeText={Property_name => setProperty_name(Property_name)}
         />
       </View>
       <View
@@ -271,7 +222,7 @@ const OwnerRegistration = ({navigation}) => {
             padding: 10,
           }}
           placeholder="City/Town/Village"
-          onChangeText={place => setPlace(place)}
+          onChangeText={Area => setArea(Area)}
         />
       </View>
       <View
@@ -324,8 +275,27 @@ const OwnerRegistration = ({navigation}) => {
             borderWidth: 2,
             padding: 10,
           }}
+          placeholder="Street"
+          onChangeText={Street => setStreet(Street)}
+        />
+      </View>
+
+      <View
+        style={{
+          flex: 1,
+          height: 40,
+          marginTop: 20,
+          marginLeft: 35,
+          marginRight: 35,
+          margin: 10,
+        }}>
+        <TextInput
+          style={{
+            borderWidth: 2,
+            padding: 10,
+          }}
           placeholder="Apartment Number/House Number"
-          onChangeText={Apartmentno => setApartmentno(Apartmentno)}
+          onChangeText={Door_Number => setDoor_Number(Door_Number)}
         />
       </View>
 

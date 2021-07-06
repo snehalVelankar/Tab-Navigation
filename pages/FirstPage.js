@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, createRef} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -6,8 +6,15 @@ import {
   Text,
   SafeAreaView
 } from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const FirstPage = ({ navigation }) => {
+  useFocusEffect(
+    React.useCallback(() => {
+    
+     
+    }, [])
+  );
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1, padding: 16 }}>
@@ -17,14 +24,7 @@ const FirstPage = ({ navigation }) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text
-            style={{
-              fontSize: 25,
-              textAlign: 'center',
-              marginBottom: 16
-            }}>
-            Controller Screen{'\n'}(You are on the Controller Screen)
-          </Text>
+          
           <TouchableOpacity
           
             onPress={

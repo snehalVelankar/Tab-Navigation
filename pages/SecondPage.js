@@ -1,12 +1,10 @@
-import React, {useState, createRef} from 'react';
+import React, {useState} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
   View,
   Text,
   SafeAreaView,
-  FlatList,
-  ScrollView,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -74,6 +72,12 @@ const SecondPage = ({navigation}) => {
               </TouchableOpacity>
             </>
           )}
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Binding')}>
+            <Text>Binding</Text>
+          </TouchableOpacity>
         </View>
         <Text
           style={{

@@ -1,18 +1,15 @@
 import * as React from 'react';
-import {
-  NavigationContainer
-} from '@react-navigation/native';
-import {
-  createStackNavigator
-} from '@react-navigation/stack';
-import {
-  createMaterialTopTabNavigator
-} from '@react-navigation/material-top-tabs';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 
 import FirstPage from './pages/FirstPage';
 import SecondPage from './pages/SecondPage';
 import OwnerRegistration from './pages/OwnerRegistration';
+import ApplianceRegistration from './pages/ApplianceRegistration';
+import LocationRegistration from './pages/LocationRegistration';
+import Binding from './pages/Binding';
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -40,14 +37,15 @@ function TabStack() {
         component={FirstPage}
         options={{
           tabBarLabel: 'Controller',
-    
-        }}  />
+        }}
+      />
       <Tab.Screen
         name="SecondPage"
         component={SecondPage}
         options={{
           tabBarLabel: 'Registration',
-        }} />
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -57,22 +55,49 @@ function App() {
       <Stack.Navigator
         initialRouteName="Controller"
         screenOptions={{
-          headerStyle: { backgroundColor: '#633689' },
+          headerStyle: {backgroundColor: '#633689'},
           headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold' }
+          headerTitleStyle: {fontWeight: 'bold'},
         }}>
         <Stack.Screen
           name="TabStack"
           component={TabStack}
-          options={{ title: ' Home Automation' }}
+          options={{title: ' Home Automation'}}
         />
-         <Stack.Screen
-        name="OwnerRegistration"
-        component={OwnerRegistration}
-        options={{
-          tabBarLabel: 'Owner Registration',
-        }} /> 
-      </Stack.Navigator> 
+        <Stack.Screen
+          name="OwnerRegistration"
+          component={OwnerRegistration}
+          options={{
+            tabBarLabel: 'Owner Registration',
+          }}
+        />
+        
+        <Stack.Screen
+          name="ApplianceRegistration"
+          component={ApplianceRegistration}
+          options={{
+            tabBarLabel: 'Appliance Registration',
+          }}
+        />
+
+<Stack.Screen
+          name="LocationRegistration"
+          component={LocationRegistration}
+          options={{
+            tabBarLabel: 'Location Registration',
+          }}
+        />
+        
+<Stack.Screen
+          name="Binding"
+          component={Binding}
+          options={{
+            tabBarLabel: 'Binding',
+          }}
+        />
+      </Stack.Navigator>
+
+      
     </NavigationContainer>
   );
 }
