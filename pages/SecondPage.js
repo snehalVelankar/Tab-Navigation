@@ -1,4 +1,4 @@
-import React, {useState, createRef, useEffect} from 'react';
+import React, {useState, createRef} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,102 +8,73 @@ import {
   FlatList,
   ScrollView,
 } from 'react-native';
-
-import {Picker} from '@react-native-picker/picker';
+import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import masterData from './Master.json';
 
 const SecondPage = ({navigation}) => {
   const [getdata, setgetdata] = useState([]);
-  const [selected, setselected] = useState('');
-  const [devices, setDevices] = useState({});
-
-  useEffect(() => {    
-    setDevices(masterData.Device);
-
-    retrieve();
-  }, []);
+  const [view, setview] = useState('');
+  const [view1, setview1] = useState('');
 
   const retrieve = async () => {
-    const read = await AsyncStorage.getItem('owner');
+    const read = await AsyncStorage.getItem('user_config');
+
+    const read1 = await AsyncStorage.getItem('user_config');
     if (read != null) {
-      setgetdata(JSON.parse(read));
+      setview(read);
+    }
+    if (read1 != null) {
+      let async_data = JSON.parse(read1);
+      let loc = async_data.location;
+      setview1(loc);
     }
   };
 
-  //let custom = require('./Master.json')
-  //let f =custom.Device.fan.make
-  //console.log(f);
-
-  let currencies = [
-    {country: 'UK', currency: 'GBP', currencylabel: 'pound'},
-    {country: 'EU', currency: 'EUR', currencylabel: 'euro'},
-    {country: 'USA', currency: 'USD', currencylabel: 'USD Dollor'},
-  ];
-
-  state = {
-    currencies: [
-      {country: 'UK', currency: 'GBP', currencylabel: 'pound'},
-      {country: 'EU', currency: 'EUR', currencylabel: 'Euro'},
-      {country: 'USA', currency: 'USD', currencylabel: 'USD dollor'},
-    ],
-    currentLabel: 'Select your currency',
-    currency: '',
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      retrieve();
+    }, [retrieve]),
+  );
 
   return (
     <SafeAreaView style={{flex: 1}}>
-       <View style={{flex: 1, padding: 16}}>
+      <View style={{flex: 1, padding: 16}}>
         <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text
-            style={{
-              fontSize: 25,
-              textAlign: 'center',
-              marginBottom: 16,
-            }}>
-            Registration Screen{'\n'}(Welcome You are on Registration Tab)
-          </Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('OwnerRegistration')}>
-            <Text>Owner Registration</Text>
+            <Text>Add Owner</Text>
           </TouchableOpacity>
-          <FlatList
-            keyExtractor={(item, id) => id}
-            data={getdata}
-            renderItem={({item}) => (
-              <ScrollView>
-                <Text>{item.OwnerName}</Text>
-              </ScrollView>
-            )}
-            ItemSeparatorComponent={() => {
-              return <View style={styles.separatorLine}></View>;
-            }}
-          />
-          <TouchableOpacity style={styles.button}>
-            <Text>Appliance Registration</Text>
-          </TouchableOpacity>
-      
 
-      <Picker
-       selectedValue={state.currency}
-       onValueChange={(itemValue, itemIndex) => this.pickerChange(itemIndex)}
-      >
-        {currencies.map(v => {
-          return <Picker.Item color="red" label={v.currencyLabel} value={v.currency} key={v.currency}/>;
-        })}
-      </Picker>
+          {view.length == 0 ? (
+            <></>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('LocationRegistration')}>
+                <Text>Location Registration</Text>
+              </TouchableOpacity>
+            </>
+          )}
 
-      <TouchableOpacity style={styles.button}>
-            <Text>Location Registration</Text>
-          </TouchableOpacity> 
-      </View>
+          {view1.length == 0 ? (
+            <></>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('ApplianceRegistration')}>
+                <Text>Appliance Registration</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
         <Text
           style={{
             fontSize: 18,
@@ -116,7 +87,7 @@ const SecondPage = ({navigation}) => {
             textAlign: 'center',
             color: 'grey',
           }}></Text>
-      </View> 
+      </View>
     </SafeAreaView>
   );
 };
@@ -132,6 +103,17 @@ const styles = StyleSheet.create({
   separatorLine: {
     height: 1,
     backgroundColor: '#fff',
+  },
+  dropdown_3: {
+    marginVertical: 20,
+    marginHorizontal: 16,
+    fontSize: 100,
+    color: 'white',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    width: 100,
+    height: 100,
+    flexGrow: 100,
   },
 });
 
