@@ -3,12 +3,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
-
 import FirstPage from './pages/FirstPage';
 import SecondPage from './pages/SecondPage';
 import OwnerRegistration from './pages/OwnerRegistration';
 import ApplianceRegistration from './pages/ApplianceRegistration';
 import LocationRegistration from './pages/LocationRegistration';
+//import Login from './pages/Login'
 import Binding from './pages/Binding';
 
 const Stack = createStackNavigator();
@@ -32,6 +32,14 @@ function TabStack() {
           borderBottomWidth: 2,
         },
       }}>
+      {/* <Tab.Screen
+        name="Login"
+        component={Login}
+        options={{
+          tabBarLabel: 'Login',
+        }}
+      /> */}
+
       <Tab.Screen
         name="FirstPage"
         component={FirstPage}
@@ -64,6 +72,15 @@ function App() {
           component={TabStack}
           options={{title: ' Home Automation'}}
         />
+
+        {/* <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{
+            tabBarLabel: 'Login',
+          }}
+        /> */}
+
         <Stack.Screen
           name="OwnerRegistration"
           component={OwnerRegistration}
@@ -71,7 +88,7 @@ function App() {
             tabBarLabel: 'Owner Registration',
           }}
         />
-        
+
         <Stack.Screen
           name="ApplianceRegistration"
           component={ApplianceRegistration}
@@ -80,15 +97,15 @@ function App() {
           }}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="LocationRegistration"
           component={LocationRegistration}
           options={{
             tabBarLabel: 'Location Registration',
           }}
         />
-        
-<Stack.Screen
+
+        <Stack.Screen
           name="Binding"
           component={Binding}
           options={{
@@ -96,8 +113,6 @@ function App() {
           }}
         />
       </Stack.Navigator>
-
-      
     </NavigationContainer>
   );
 }

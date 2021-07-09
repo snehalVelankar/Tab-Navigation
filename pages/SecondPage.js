@@ -10,19 +10,15 @@ import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SecondPage = ({navigation}) => {
-  const [getdata, setgetdata] = useState([]);
   const [view, setview] = useState('');
   const [view1, setview1] = useState('');
-
+  const [view2, setview2] = useState('');
   const retrieve = async () => {
     const read = await AsyncStorage.getItem('user_config');
 
-    const read1 = await AsyncStorage.getItem('user_config');
     if (read != null) {
       setview(read);
-    }
-    if (read1 != null) {
-      let async_data = JSON.parse(read1);
+      let async_data = JSON.parse(read);
       let loc = async_data.location;
       setview1(loc);
     }
@@ -48,7 +44,6 @@ const SecondPage = ({navigation}) => {
             onPress={() => navigation.navigate('OwnerRegistration')}>
             <Text>Add Owner</Text>
           </TouchableOpacity>
-
           {view.length == 0 ? (
             <></>
           ) : (
@@ -60,7 +55,6 @@ const SecondPage = ({navigation}) => {
               </TouchableOpacity>
             </>
           )}
-
           {view1.length == 0 ? (
             <></>
           ) : (
@@ -70,14 +64,13 @@ const SecondPage = ({navigation}) => {
                 onPress={() => navigation.navigate('ApplianceRegistration')}>
                 <Text>Appliance Registration</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate('Binding')}>
+                <Text>Binding</Text>
+              </TouchableOpacity>
             </>
           )}
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Binding')}>
-            <Text>Binding</Text>
-          </TouchableOpacity>
         </View>
         <Text
           style={{

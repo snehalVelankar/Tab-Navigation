@@ -46,7 +46,7 @@ const Binding = ({navigation}) => {
     }
     console.log('chosen appliance ', location, 'location', appliance);
     //let binding = location.concat(appliance);
-    let binding = location + '_' + appliance;
+    let binding = async_data.owner.owner_name+'_'+location + '_' + appliance;
 
     console.log('binded appliance and location', binding);
 

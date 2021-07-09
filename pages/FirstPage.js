@@ -4,55 +4,42 @@ import {
   StyleSheet,
   View,
   Text,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 
-const FirstPage = ({ navigation }) => {
-  useFocusEffect(
-    React.useCallback(() => {
-    
-     
-    }, [])
-  );
+const FirstPage = ({navigation}) => {
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1, padding: 16 }}>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{flex: 1, padding: 16}}>
         <View
           style={{
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          
           <TouchableOpacity
-          
-            onPress={
-              () => navigation.navigate('SecondPage')
-            }>
-            
-          </TouchableOpacity>
+            onPress={() =>
+              navigation.navigate('SecondPage')
+            }></TouchableOpacity>
         </View>
         <Text
           style={{
             fontSize: 18,
             textAlign: 'center',
-            color: 'grey'
-          }}>
-          
-        </Text>
+            color: 'grey',
+          }}></Text>
         <Text
           style={{
             fontSize: 16,
             textAlign: 'center',
-            color: 'grey'
-          }}>
-        
-        </Text>
+            color: 'grey',
+          }}></Text>
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   button: {

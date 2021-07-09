@@ -9,10 +9,11 @@ import {
   TextInput,
   Button,
   Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-var RNFS = require('react-native-fs');
 
 let configurations = {
   owner: {
@@ -31,10 +32,11 @@ let configurations = {
   appliance: [],
   Binding: [],
 };
-//owner_id= " owner.name+owner_address(aptno state... etc)"- club - what string we get is an ownerid
-Binding = []; //It will be like - owneraddress_secondfloorbedroom2_light3
+
+import {check_password, read_store_async} from './Functions';
 
 const OwnerRegistration = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [OwnerName, setOwnerName] = useState('');
   const [password, setpassword] = useState('');
   const [MailId, setMailId] = useState('');
@@ -47,7 +49,8 @@ const OwnerRegistration = ({navigation}) => {
   const [Door_Number, setDoor_Number] = useState('');
   // const [getdata, setgetdata] = useState('');
 
-  const handleSubmitPress = () => {
+  const handleSubmitPress = async () => {
+    setModalVisible(!modalVisible);
     if (
       !OwnerName ||
       !password ||
@@ -75,6 +78,19 @@ const OwnerRegistration = ({navigation}) => {
     configurations.owner.Street = Street;
     configurations.owner.Door_Number = Door_Number;
 
+    let val = await check_password(password);
+    console.log('val', val);
+    if (val == 'valid') {
+      let data2 = JSON.stringify(configurations);
+      if (data2 != null) {
+        read_store_async('owner_event', data2);
+      }
+    } else {
+      Alert.alert('Invalid Password');
+    }
+  };
+
+  /*
     const store = async configurations => {
       console.log('-----------------------------');
       const async_data_owner = await AsyncStorage.getItem('user_config');
@@ -110,7 +126,7 @@ const OwnerRegistration = ({navigation}) => {
     if (data2 != null) {
       store(data2);
     }
-  };
+  };*/
 
   return (
     <ScrollView>
@@ -134,24 +150,7 @@ const OwnerRegistration = ({navigation}) => {
           onChangeText={OwnerName => setOwnerName(OwnerName)}
         />
       </View>
-      <View
-        style={{
-          flex: 1,
-          height: 40,
-          marginTop: 20,
-          marginLeft: 35,
-          marginRight: 35,
-          margin: 10,
-        }}>
-        <TextInput
-          style={{
-            borderWidth: 2,
-            padding: 10,
-          }}
-          placeholder="owner password"
-          onChangeText={password => setpassword(password)}
-        />
-      </View>
+
       <View
         style={{
           flex: 1,
@@ -299,9 +298,99 @@ const OwnerRegistration = ({navigation}) => {
         />
       </View>
 
-      <Button title="submit" color="green" onPress={handleSubmitPress} />
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>ENTER PASSWORD</Text>
+
+              <TextInput
+                style={{
+                  borderWidth: 2,
+                  padding: 10,
+                }}
+                placeholder="Enter password"
+                onChangeText={password => setpassword(password)}
+              />
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={handleSubmitPress}>
+                <Text style={styles.textStyle}>SUBMIT</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}>
+          <Text style={styles.textStyle}>submit</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 };
 
 export default OwnerRegistration;
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});
+
+// SubmitEvent
+
+// check if owner is registered
+
+// if(data.owner.owner_name =="" && data.owner.owner+password=="")
+//  yes{
+//    please enter a new password
+//   ask the owner to set a net password
+
+//  no{
+//    please enter password to procced
+//   ask the ownner to enter password which he gave while regidtering the owner
+//  }
