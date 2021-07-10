@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let configurations = {
   owner: {
-    owner_name: '', //give owner_name // ownername //propname/street/replace place- area/state/country/replace aptno- door no
+    owner_name: '',
     owner_password: '',
     MailId: '',
     PhoneNumber: '',
@@ -47,7 +47,6 @@ const OwnerRegistration = ({navigation}) => {
   const [State, setState] = useState('');
   const [country, setcountry] = useState('');
   const [Door_Number, setDoor_Number] = useState('');
-  // const [getdata, setgetdata] = useState('');
 
   const handleSubmitPress = async () => {
     setModalVisible(!modalVisible);
@@ -79,11 +78,24 @@ const OwnerRegistration = ({navigation}) => {
     configurations.owner.Door_Number = Door_Number;
 
     let val = await check_password(password);
-    console.log('val', val);
     if (val == 'valid') {
       let data2 = JSON.stringify(configurations);
       if (data2 != null) {
-        read_store_async('owner_event', data2);
+        let reg = await read_store_async('owner_event', data2);
+        console.log(reg);
+        if (reg == 'Data is updated') {
+          Alert.alert(
+            'Success',
+            'Data is updated',
+            [
+              {
+                text: 'Ok',
+                onPress: () => navigation.navigate('FirstPage'),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
       }
     } else {
       Alert.alert('Invalid Password');

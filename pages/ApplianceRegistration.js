@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   Alert,
+  FlatList,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -16,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ApplianceRegistration = ({navigation}) => {
   const [Device, setDevice] = useState('');
   const [asyncapp, setasyncapp] = useState([]);
-  const [drop_app, setdrop_app] = useState(''); //to capture dropdown vals
+  // const [drop_app, setdrop_app] = useState(''); //to capture dropdown vals
 
   app_obj = {
     Device: '',
@@ -40,13 +41,13 @@ const ApplianceRegistration = ({navigation}) => {
     }
   };
 
-  const handledeletePress = () => {
-    if (!drop_app) {
-      alert('Please enter appliance');
-      return;
-    }
-    console.log('chosen dropdown value to delete>>', drop_app);
-
+  const handledeletePress = item => {
+    // if (!drop_app) {
+    //   alert('Please enter appliance');
+    //   return;
+    // }
+    // console.log('chosen dropdown value to delete>>', drop_app);
+    console.log('chosen item to delete', item);
     const store = async userdata => {
       // console.log('-----------------------------');
       // console.log('data from user ', userdata);
@@ -101,7 +102,7 @@ const ApplianceRegistration = ({navigation}) => {
         console.log(' after storing new data inside async storage ', value);
       }
     };
-    let data2 = JSON.stringify(drop_app);
+    let data2 = JSON.stringify(item);
 
     Alert.alert(
       'Are you sure ',
@@ -129,7 +130,32 @@ const ApplianceRegistration = ({navigation}) => {
     } else {
       let data2 = JSON.stringify(Device);
       if (data2 != null) {
-        read_store_async('appliance_event', data2);
+        let app = await read_store_async('appliance_event', data2);
+        if (app == 'data is updated') {
+          Alert.alert(
+            'Success',
+            'Data is updated',
+            [
+              {
+                text: 'Ok',
+                onPress: () => navigation.navigate('FirstPage'),
+              },
+            ],
+            {cancelable: false},
+          );
+        } else if (app == 'same data found ') {
+          Alert.alert(
+            'appliance name already present ',
+            'please insert new appliance name',
+            [
+              {
+                text: 'Ok',
+                onPress: () => navigation.navigate('FirstPage'),
+              },
+            ],
+            {cancelable: false},
+          );
+        }
       }
     }
   };
@@ -213,7 +239,7 @@ const ApplianceRegistration = ({navigation}) => {
   //   }
   // };
   return (
-    <ScrollView>
+    <>
       <View
         style={{
           flex: 1,
@@ -230,14 +256,12 @@ const ApplianceRegistration = ({navigation}) => {
           placeholder=" Enter Device name eg:Fan,AC,Light...etc"
           onChangeText={Device => setDevice(Device)}
         />
-      </View>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => handleSubmitPress()}>
-        <Text> submit </Text>
-      </TouchableOpacity>
-      <View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleSubmitPress()}>
+          <Text>Add Appliance</Text>
+        </TouchableOpacity>
+        {/* <View>
         <ModalDropdown
           textStyle={{
             fontSize: 16,
@@ -249,23 +273,40 @@ const ApplianceRegistration = ({navigation}) => {
           options={asyncapp}
           defaultValue={'Appliance List'}
           onSelect={(idx, value) => setdrop_app(value)}></ModalDropdown>
+      </View> */}
+        <FlatList
+          keyExtractor={(item, id) => id}
+          data={asyncapp}
+          renderItem={({item}) => (
+            <View>
+              <Text>{item}</Text>
+              <Button
+                title="delete"
+                color="red"
+                onPress={() => handledeletePress(item)}
+              />
+            </View>
+          )}
+          // ItemSeparatorComponent={() => {
+          //   return <View style={styles.separatorLine}></View>;
+          // }}
+        />
       </View>
-      <Button title="delete" color="red" onPress={handledeletePress} />
-    </ScrollView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
-    flex: 1,
-    height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-
-    marginRight: 35,
-    margin: 10,
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#7fff00',
+    padding: 10,
+    width: 300,
+    marginTop: 16,
+  },
+  button1: {
+    alignItems: 'center',
+    backgroundColor: '#db7093',
     padding: 10,
     width: 300,
     marginTop: 16,

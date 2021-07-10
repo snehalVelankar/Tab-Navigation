@@ -14,6 +14,13 @@ import {
   Pressable,
 } from 'react-native';
 
+const getData = async () => {
+  const value = await AsyncStorage.getItem('user_config');
+  if (value != null) {
+    console.log(' after storing new data inside async storage ', value);
+  }
+};
+
 const read_store_async = async (event, config_obj) => {
   const async_data_owner = await AsyncStorage.getItem('user_config');
   let read = JSON.parse(async_data_owner);
@@ -24,13 +31,13 @@ const read_store_async = async (event, config_obj) => {
     case 'owner_event':
       if (read == null) {
         await AsyncStorage.setItem('user_config', config_obj);
-        Alert.alert('Data is updated');
+        return 'Data is updated';
         getData();
       } else {
         //console.log(read.owner);
         //console.log(password, '< >', read.owner.owner_password);
         await AsyncStorage.setItem('user_config', config_obj);
-        Alert.alert('Data is updated');
+        return 'Data is updated';
         getData();
       }
       break;
@@ -41,7 +48,8 @@ const read_store_async = async (event, config_obj) => {
         //console.log('data to be written in async', async_data);
         let string_data = JSON.stringify(async_data);
         await AsyncStorage.setItem('user_config', string_data);
-        Alert.alert('data is updated');
+        return 'data is updated';
+        // Alert.alert('data is updated');
         getData();
       } else {
         let loc_status = 0,
@@ -62,32 +70,33 @@ const read_store_async = async (event, config_obj) => {
           console.log('data to be written in async', async_data);
           let string_data1 = JSON.stringify(async_data);
           await AsyncStorage.setItem('user_config', string_data1);
-          Alert.alert('data is updated');
+          // Alert.alert('data is updated');
+          return 'data is updated';
           getData();
         } else {
-          console.log('same data found ');
-          Alert.alert(
-            'location name already present, please insert new location name',
-          );
+          // console.log('same data found ');
+          return 'same data found ';
+          // Alert.alert(
+          //   'location name already present, please insert new location name',
+          // );
           loc_status = 0;
         }
       }
       break;
 
     case 'appliance_event':
-      
       if (async_data.appliance.length <= 0) {
         async_data.appliance.push(config_obj);
         //console.log('data to be written in async', async_data);
         let string_data = JSON.stringify(async_data);
         await AsyncStorage.setItem('user_config', string_data);
-        Alert.alert('data is updated');
+        return 'data is updated';
+        // Alert.alert('data is updated');
         getData();
       } else {
         let app_status = 0,
           app_len = async_data.appliance.length;
         for (let x = 0; x < app_len; x++) {
-         
           if (config_obj == async_data.appliance[x]) {
             app_status = 1;
             break;
@@ -99,13 +108,15 @@ const read_store_async = async (event, config_obj) => {
           console.log('data to be written in async', async_data);
           let string_data1 = JSON.stringify(async_data);
           await AsyncStorage.setItem('user_config', string_data1);
-          Alert.alert('data is updated');
+          // Alert.alert('data is updated');
+          return 'data is updated';
           getData();
         } else {
           console.log('same data found ');
-          Alert.alert(
-            'application name already present, please insert new location name',
-          );
+          return 'same data found ';
+          // Alert.alert(
+          //   'application name already present, please insert new location name',
+          // );
           app_status = 0;
         }
       }
@@ -129,13 +140,6 @@ const check_password = async pass => {
     result = 'valid';
 
     return result;
-  }
-};
-
-const getData = async () => {
-  const value = await AsyncStorage.getItem('user_config');
-  if (value != null) {
-    console.log(' after storing new data inside async storage ', value);
   }
 };
 

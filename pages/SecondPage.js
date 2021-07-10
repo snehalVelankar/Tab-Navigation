@@ -1,95 +1,117 @@
 import React, {useState} from 'react';
-import {
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity,Alert} from 'react-native';
+import DialogInput from 'react-native-dialog-input';
 import {useFocusEffect} from '@react-navigation/native';
+import {check_password} from './Functions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SecondPage = ({navigation}) => {
-  const [view, setview] = useState('');
-  const [view1, setview1] = useState('');
-  const [view2, setview2] = useState('');
+  const [isDialogVisible, setisDialogVisible] = useState(false);
+  const [view, setview] = useState();
+
+  function close(isShow) {
+    setisDialogVisible(isShow);
+
+    navigation.navigate('FirstPage');
+  }
+
+  const sendInput = async (inputText, close) => {
+    console.log('password ' + inputText);
+    let val = await check_password(inputText);
+    console.log('val', val);
+    if (val == 'valid') {
+      setview(false);
+      setisDialogVisible(close);
+    } else {
+      Alert.alert(
+        'Incorrect Credentials',
+        'Enter valid password',
+        [
+          {
+            text: 'Ok',
+
+            onPress: () => navigation.navigate('FirstPage'),
+          },
+        ],
+        {cancelable: false},
+      );
+
+
+    }
+   
+  };
+
   const retrieve = async () => {
     const read = await AsyncStorage.getItem('user_config');
-
-    if (read != null) {
-      setview(read);
-      let async_data = JSON.parse(read);
-      let loc = async_data.location;
-      setview1(loc);
+    if (read == null) {
+      setview(true);
+    } else {
+      setview(false);
+      setisDialogVisible(true);
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
       retrieve();
-    }, [retrieve]),
+    }, []),
   );
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1, padding: 16}}>
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
+    <View style={styles.container}>
+      <DialogInput
+        isDialogVisible={isDialogVisible}
+        title={'VERIFICATION'}
+        message={'Enter Password'}
+        submitInput={inputText => {
+          sendInput(inputText, false);
+        }}
+        closeDialog={() => {
+          close(false);
+        }}></DialogInput>
+      {view == false ? (
+        <>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('OwnerRegistration')}>
+            <Text>Modify Owner</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('LocationRegistration')}>
+            <Text>Location Registration</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('ApplianceRegistration')}>
+            <Text>Appliance Registration</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('Binding')}>
+            <Text>Binding</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('OwnerRegistration')}>
             <Text>Add Owner</Text>
           </TouchableOpacity>
-          {view.length == 0 ? (
-            <></>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('LocationRegistration')}>
-                <Text>Location Registration</Text>
-              </TouchableOpacity>
-            </>
-          )}
-          {view1.length == 0 ? (
-            <></>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('ApplianceRegistration')}>
-                <Text>Appliance Registration</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => navigation.navigate('Binding')}>
-                <Text>Binding</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-        <Text
-          style={{
-            fontSize: 18,
-            textAlign: 'center',
-            color: 'grey',
-          }}></Text>
-        <Text
-          style={{
-            fontSize: 16,
-            textAlign: 'center',
-            color: 'grey',
-          }}></Text>
-      </View>
-    </SafeAreaView>
+        </>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   button: {
     alignItems: 'center',
     backgroundColor: '#DDDDDD',
@@ -97,21 +119,5 @@ const styles = StyleSheet.create({
     width: 300,
     marginTop: 16,
   },
-  separatorLine: {
-    height: 1,
-    backgroundColor: '#fff',
-  },
-  dropdown_3: {
-    marginVertical: 20,
-    marginHorizontal: 16,
-    fontSize: 100,
-    color: 'white',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    width: 100,
-    height: 100,
-    flexGrow: 100,
-  },
 });
-
 export default SecondPage;

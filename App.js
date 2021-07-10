@@ -8,8 +8,10 @@ import SecondPage from './pages/SecondPage';
 import OwnerRegistration from './pages/OwnerRegistration';
 import ApplianceRegistration from './pages/ApplianceRegistration';
 import LocationRegistration from './pages/LocationRegistration';
-//import Login from './pages/Login'
+
 import Binding from './pages/Binding';
+
+
 
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
@@ -32,14 +34,6 @@ function TabStack() {
           borderBottomWidth: 2,
         },
       }}>
-      {/* <Tab.Screen
-        name="Login"
-        component={Login}
-        options={{
-          tabBarLabel: 'Login',
-        }}
-      /> */}
-
       <Tab.Screen
         name="FirstPage"
         component={FirstPage}
@@ -51,7 +45,7 @@ function TabStack() {
         name="SecondPage"
         component={SecondPage}
         options={{
-          tabBarLabel: 'Registration',
+          tabBarLabel: 'Configurations',
         }}
       />
     </Tab.Navigator>
@@ -72,14 +66,6 @@ function App() {
           component={TabStack}
           options={{title: ' Home Automation'}}
         />
-
-        {/* <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            tabBarLabel: 'Login',
-          }}
-        /> */}
 
         <Stack.Screen
           name="OwnerRegistration"

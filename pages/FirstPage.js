@@ -9,7 +9,6 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 
 const FirstPage = ({navigation}) => {
-
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flex: 1, padding: 16}}>
